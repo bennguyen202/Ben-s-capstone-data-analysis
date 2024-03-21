@@ -1,4 +1,5 @@
-clear all
+% Description of script
+% clear all
 close all
 clc
 

@@ -4,17 +4,17 @@ clc
 
 %% Loop to put all VR data in a struct
 VRDATA = []; % initialize struct
-f = dir('*C6.json'); % get all data files relevant
-fnames = string({f.name}); % transform to string array
-for k = 1:length(fnames) % loop to get data files into one struct 
-    fname = fnames(k); % get one file
-    ch = char(fnames(k)); % transform to character array to store into fields
+f = dir('../data/*C6.json'); % get all data files relevant
+% fnames = string({f.name}); % transform to string array
+for k = 1:length(f) % loop to get data files into one struct 
+    fname = fullfile(f(k).folder, f(k).name); % get one file
+    ch = char(f(k).name); % transform to character array to store into fields
     VRDATA.(ch(1:end-5)) = readstruct(fname); % read data file into struct
-
 end
+
 %% set up variables for plotting
 yl = [-0.3 1.1]; % set y limit
-ylc = [2.4 60];
+ylc = [2.4 60]; %?
 
 x = [VRDATA.Ben_UC6.list.TrialNumber]; % extract trial number and logmar score
 y = [VRDATA.Ben_UC6.list.LogMAR];
@@ -78,52 +78,83 @@ a3 = mean(y3(end-20:end));
 % ylabel('logmar score')
 % title('Left eye VR visual acuity performance')
 
+% set figure defaults
+% set(groot,'defaultFontSize',14)
+fontSize = 12; 
+set(groot,'defaultAxesFontSize', fontSize)
+set(groot,'defaultTextFontSize', fontSize)
+% set(groot,'defaultLabelFontSize',14)
+set(groot,'defaultAxesLineWidth',1)
+set(groot,'defaultLineLineWidth',2.5)
+set(groot,'defaultAxesTickDir', 'out');
+set(groot,'defaultAxesTickDirMode', 'manual');
+
 %% plot test
-figure
+% TODO: Plot data in this order: Left eye, both eyes, Right eye
+% Will be more intuitive and easier to compare
+
+fig = figure;
 t = tiledlayout(1,3);
+
 ax1 = nexttile;
-yyaxis left
+% yyaxis left
 plot(ax1,x1,y1,'LineWidth',1) % both eyes plot
 yline(real_both,'r','LineWidth',2)  % line of real score
 yline(a1,'--m','LineWidth',2) % line of average VR score
 yline(abs(a1-real_both),'-.g','LineWidth',2) % line of offset
-legend('VR LogMar score','real score', 'VR average','offset' )
+% legend('VR LogMar score','real score', 'VR average','offset' )
 ylim(yl)
-title('Both eyes VR visual acuity performance')
-yyaxis right % add cycles per degree on the right y axis
-plot(x1,cy1,'LineWidth',1)
-ylabel('cycles per degree')
-ylim(ylc)
-set(gca, 'YDir','reverse') % flip the right y axis
+title('Both eyes')
+
+% yyaxis right % add cycles per degree on the right y axis
+% plot(x1,cy1,'LineWidth',1)
+% ylabel('cycles per degree')
+% ylim(ylc)
+% set(gca, 'YDir','reverse') % flip the right y axis
 
 ax2 = nexttile; % right eye plot
 plot(ax2,x2,y2,'LineWidth',1)
 yline(real_right,'r','LineWidth',2) 
 yline(a2,'--m','LineWidth',2)
 yline(abs(a2-real_right),'-.g','LineWidth',2)
-legend('VR LogMar score','real score', 'VR average','offset' )
+% legend('VR LogMar score','real score', 'VR average','offset' )
 ylim(yl)
-title('Right eye VR visual acuity performance')
-yyaxis right
-plot(x2,cy2,'LineWidth',1)
-ylim(ylc)
-set(gca, 'YDir','reverse')
+title('Right eye')
+
+% yyaxis right
+% plot(x2,cy2,'LineWidth',1)
+% ylim(ylc)
+% set(gca, 'YDir','reverse')
 
 ax3 = nexttile; % left eye plot
 plot(ax3,x3,y3,'LineWidth',1)
 yline(real_left,'r','LineWidth',2) 
 yline(a3,'--m','LineWidth',2)
 yline(abs(a3-real_left),'-.g','LineWidth',2)
-legend('VR LogMar score','real score', 'VR average','offset' )
+legend('VR','eyechart', 'VR average','offset', 'Location', 'northeastoutside')
 ylim(yl)
-title('Left eye VR visual acuity performance')
-yyaxis right
-plot(x3,cy3,'LineWidth',1)
-ylim(ylc)
-set(gca, 'YDir','reverse')
+title('Left eye')
 
-xlabel(t,'trial number')
-ylabel(t,'VR logmar score')
+Ax = gca;
+ytix = Ax.YTick; % tick location
+ytl = string((1./(10.^ytix))*30); % tick label
+ytl = extractBefore(ytl, min(3, ytl.strlength())+1); % truncate strings
+text(ones(size(ytix))*max(xlim)+0.08*diff(xlim), ytix, ytl, 'Horiz','left', 'Vert','middle', 'Fontsize', fontSize)
+
+% yyaxis right
+% plot(x3,cy3,'LineWidth',1)
+% ylim(ylc)
+% set(gca, 'YDir','reverse')
+
+xlabel(t,'Trial number')
+ylabel(t,'Acuity (logMAR)')
+
+% Create a common ylabel on the right side
+annotation('textbox',[1 .4 .5 .1], ...
+    'String','Acuity (cyc/deg)','EdgeColor','none', 'Rotation', 90, 'FontSize', fontSize)
+
+% Adjust the figure's position to make room for the ylabel
+fig.Position(3) = fig.Position(3) + .1; % does not currently work
 
 %% stats stuff
 s.real = [-0.200000000000000	0.240000000000000	-0.140000000000000 0.1 0 0.1 -0.1 -0.06 -0.06 -0.04 0.08 0.02 0.62 0.54 0.8 ];
@@ -132,10 +163,11 @@ R = corrcoef(s.real,s.vr)
 
 figure
 scatter(s.real,s.vr,'filled')
-xlabel('real logmar score')
-ylabel('VR logmar score')
+xlabel('Eyechart acuity (logMAR)')
+ylabel('VR acuity (logMAR)')
 xlim([-0.3 1.1])
 ylim([-0.3 1.1])
+line([-.3 1.1], [-.3 1.1]) % identity (perfect performance)
 lsline
 %%
 % for k = 1:length(fnames) % loop to get data files into one struct 

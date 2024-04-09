@@ -106,6 +106,11 @@ yline(abs(a1-real_both),'-.g','LineWidth',2) % line of offset
 ylim(yl)
 title('Both eyes')
 
+% The resolution of the Quest 2 is 20 pixels/degree
+% so, 10 cycles/degree, or log10(30/cycpdeg) logMar
+yline(log10(30/10),'LineWidth',1) % Quest 2
+yline(log10(30/12.5),'r','LineWidth',1) % Quest 3
+
 % yyaxis right % add cycles per degree on the right y axis
 % plot(x1,cy1,'LineWidth',1)
 % ylabel('cycles per degree')
@@ -169,6 +174,11 @@ xlim([-0.3 1.1])
 ylim([-0.3 1.1])
 line([-.3 1.1], [-.3 1.1]) % identity (perfect performance)
 lsline
+
+% The resolution of the Quest 2 is 20 pixels/degree
+% so, 10 cycles/degree, or log10(30/cycpdeg) logMar
+yline(log10(30/10),'LineWidth',1)
+
 %%
 % for k = 1:length(fnames) % loop to get data files into one struct 
 %     fname = fnames(k); % get one file

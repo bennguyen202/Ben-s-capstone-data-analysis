@@ -108,8 +108,8 @@ title('Left eyes')
 
 % The resolution of the Quest 2 is 20 pixels/degree
 % so, 10 cycles/degree, or log10(30/cycpdeg) logMar
-yline(log10(30/10),'LineWidth',1) % Quest 2
-yline(log10(30/12.5),'r','LineWidth',1) % Quest 3
+yline(log10(30/10),'-', 'Quest 2', 'LineWidth',1) % Quest 2
+yline(log10(30/12.5),'-r','Quest 3', 'LineWidth',1) % Quest 3
 
 
 % yyaxis right % add cycles per degree on the right y axis
@@ -182,8 +182,8 @@ lsline
 
 % The resolution of the Quest 2 is 20 pixels/degree
 % so, 10 cycles/degree, or log10(30/cycpdeg) logMar
-yline(log10(30/10),'LineWidth',1) % Quest 2
-yline(log10(30/12.5),'r','LineWidth',1) % Quest 3
+yline(log10(30/10),'-', 'Quest 2', 'LineWidth',1) % Quest 2
+yline(log10(30/12.5),'-r','Quest 3', 'LineWidth',1) % Quest 3
 
 % figure % scatter real and vr results (only uncorrected)
 % scatter(s.realuc,s.vruc,'filled')

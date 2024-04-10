@@ -182,8 +182,12 @@ lsline
 
 % The resolution of the Quest 2 is 20 pixels/degree
 % so, 10 cycles/degree, or log10(30/cycpdeg) logMar
-yline(log10(30/10),'-', 'Quest 2', 'LineWidth',1) % Quest 2
-yline(log10(30/12.5),'-r','Quest 3', 'LineWidth',1) % Quest 3
+yline(log10(30/10),'--', 'Meta Q2', 'LineWidth',1) % Quest 2
+yline(log10(30/12.5),'--','Meta Q3', 'LineWidth',1) % Quest 3
+yline(log10(30/(34/2)),'--','Apple VP', 'LineWidth',1) 
+yline(log10(30/(9.81/2)),'--','Rift CV1', 'LineWidth',1) 
+yline(log10(30/(51/2)),'--','Varjo XR4', 'LineWidth',1) 
+
 
 % figure % scatter real and vr results (only uncorrected)
 % scatter(s.realuc,s.vruc,'filled')

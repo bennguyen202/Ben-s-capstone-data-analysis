@@ -17,12 +17,12 @@ end
 yl = [-0.3 1.1]; % set y limit
 
 
-x = [VRDATA.Q_003_UC6.list.TrialNumber]; % extract trial number and logmar score
-y = [VRDATA.Q_003_UC6.list.LogMAR];
+x = [VRDATA.M_004_UC6.list.TrialNumber]; % extract trial number and logmar score
+y = [VRDATA.M_004_UC6.list.LogMAR];
 
-c1 = [VRDATA.Q_003_UC6.list.EyeCondition] == "Both_Eyes"; % extract eye condition
-c2 = [VRDATA.Q_003_UC6.list.EyeCondition] == "Right_Eye";
-c3 = [VRDATA.Q_003_UC6.list.EyeCondition] == "Left_Eye";
+c1 = [VRDATA.M_004_UC6.list.EyeCondition] == "Both_Eyes"; % extract eye condition
+c2 = [VRDATA.M_004_UC6.list.EyeCondition] == "Right_Eye";
+c3 = [VRDATA.M_004_UC6.list.EyeCondition] == "Left_Eye";
 
 x1 = x(c1); % match logmar score to condition
 y1 = y(c1);
@@ -36,17 +36,26 @@ x3 = x(c3);
 y3 = y(c3);
 yy3 = y3(end-20:end);
 
-real_both = 0.96; % real logmar score
-real_right = 0.95;
-real_left = 0.96;
+real_both = 0.82; % real logmar score
+real_right = 0.92;
+real_left = 0.86;
 
 a1 = mean(y1(end-20:end)); % mean of VR logmar score (average last 20 trials)
 a2 = mean(y2(end-20:end));
 a3 = mean(y3(end-20:end));
 
-ci1 = fitdist(yy1', 'normal');
-ci2 = fitdist(yy2', 'normal');
-ci3 = fitdist(yy3', 'normal');
+
+SEM1 = std(yy1)/sqrt(length(yy1));               % Standard Error
+ts1 = tinv([0.025  0.975],length(yy1)-1);      % T-Score
+CI1 = mean(yy1) + ts1*SEM1;  % Confidence inverval 95%
+
+SEM2 = std(yy2)/sqrt(length(yy2));               % Standard Error
+ts2 = tinv([0.025  0.975],length(yy2)-1);      % T-Score
+CI2 = mean(yy2) + ts2*SEM2;  % Confidence inverval 95%
+
+SEM3 = std(yy3)/sqrt(length(yy3));               % Standard Error
+ts3 = tinv([0.025  0.975],length(yy3)-1);      % T-Score
+CI3 = mean(yy3) + ts3*SEM3;  % Confidence inverval 95%
 
 
 fontSize = 12; 
@@ -77,7 +86,7 @@ title('Left eyes')
 % so, 10 cycles/degree, or log10(30/cycpdeg) logMar
 yline(log10(30/10),'LineWidth',1) % Quest 2
 % yline(log10(30/12.5),'r','LineWidth',1) % Quest 3
-yregion(ci3.mu - ci3.sigma,ci3.mu +ci3.sigma,'FaceColor','g','EdgeColor','k')
+yregion(CI3(1),CI3(2),'FaceColor','g','EdgeColor','k')
 
 
 
@@ -86,7 +95,7 @@ plot(ax2,x1,y1,'LineWidth',1)
 yline(real_both,'r','LineWidth',2) 
 yline(a1,'--m','LineWidth',2)
 yline(log10(30/10),'LineWidth',1) % Quest 2
-yregion(ci1.mu - ci1.sigma,ci1.mu +ci1.sigma,'FaceColor','g','EdgeColor','k')
+yregion(CI1(1),CI1(2),'FaceColor','g','EdgeColor','k')
 ylim(yl)
 title('Both eyes')
 
@@ -97,7 +106,7 @@ plot(ax3,x2,y2,'LineWidth',1)
 yline(real_right,'r','LineWidth',2) 
 yline(a2,'--m','LineWidth',2)
 yline(log10(30/10),'LineWidth',1) % Quest 2
-yregion(ci2.mu - ci2.sigma,ci2.mu +ci2.sigma,'FaceColor','g','EdgeColor','k')
+yregion(CI2(1),CI2(2),'FaceColor','g','EdgeColor','k')
 legend('VR','eyechart', 'VR average', 'quest 2 limit', 'Location', 'northeastoutside')
 ylim(yl)
 title('Right eye')

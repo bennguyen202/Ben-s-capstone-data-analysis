@@ -20,11 +20,9 @@ VRDATA = []; % initialize struct
 % sub = 'AR_002_C6'; % subject id
 % dataDir = '../data';
 f = dir('../data/*C6.json'); % get relevant data files 
-% fnames = string({f.name}); % transform to string array
+
 for k = 1:length(f) % loop to get data files into struct 
     fname = fullfile(f(k).folder, f(k).name); % get one file
-    % ch = char(f(k).name); % transform to character array to store into fields
-    % VRDATA.(ch(1:end-5)) = readstruct(fname); % read data file into struct
     VRDATA{k} = readstruct(fname); % read data file into struct
 end
 
@@ -40,15 +38,15 @@ c3 = [VRDATA{k}.list.EyeCondition] == "Left_Eye";
 
 x1 = x(c1); % match logmar score to condition
 y1 = y(c1);
-% cy1 = (1./(10.^y1))*30;
+
 
 x2 = x(c2);
 y2 = y(c2);
-% cy2 = (1./(10.^y2))*30;
+
 
 x3 = x(c3);
 y3 = y(c3);
-% cy3 = (1./(10.^y3))*30;
+
 
 % Where does this data come from? Is subject specific
 real_both = -0.1; % real logmar score
@@ -59,40 +57,7 @@ a1 = mean(y1(end-20:end)); % mean of VR logmar score (average last 20 trials)
 a2 = mean(y2(end-20:end));
 a3 = mean(y3(end-20:end));
 
-%% plot 
-% figure
-% subplot(1,3,1) % both eyes plot
-% plot(x1,y1,'LineWidth',1)
-% yline(real_both,'r','LineWidth',2)  % line of real score
-% yline(a1,'--m','LineWidth',2) % line of average VR score
-% yline(abs(a1-real_both),'-.g','LineWidth',2) % line of offset
-% legend('VR LogMar score','real score', 'VR average','offset' )
-% ylim(yl)
-% xlabel('trial number')
-% ylabel('logmar score')
-% title('Both eyes VR visual acuity performance')
-% 
-% subplot(1,3,2) % right eye plot
-% plot(x2,y2,'LineWidth',1)
-% yline(real_right,'r','LineWidth',2) 
-% yline(a2,'--m','LineWidth',2)
-% yline(abs(a2-real_right),'-.g','LineWidth',2)
-% legend('VR LogMar score','real score', 'VR average','offset' )
-% ylim(yl)
-% xlabel('trial number')
-% ylabel('logmar score')
-% title('Right eye VR visual acuity performance')
-% 
-% subplot(1,3,3) % left eye plot
-% plot(x3,y3,'LineWidth',1)
-% yline(real_left,'r','LineWidth',2) 
-% yline(a3,'--m','LineWidth',2)
-% yline(abs(a3-real_left),'-.g','LineWidth',2)
-% legend('VR LogMar score','real score', 'VR average','offset' )
-% ylim(yl)
-% xlabel('trial number')
-% ylabel('logmar score')
-% title('Left eye VR visual acuity performance')
+
 
 %% plot test
 
@@ -102,7 +67,7 @@ yl = [-0.3 1.1]; % set y limit (logMAR)
 t = tiledlayout(1,3);
 
 ax1 = nexttile;
-% yyaxis left
+
 ph = plot(ax1,x3,y3,'LineWidth',2); % left eyes plot
 % yline(real_left,'r','LineWidth',2)  % line of ETDRS score
 lh = yline(a3,'LineWidth',2); % line of average VR score
@@ -116,27 +81,19 @@ title('Left eye')
 yline(log10(30/10),'--', 'Meta Q2', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
 % yline(log10(30/12.5),'--','Meta Q3', 'LineWidth',1, 'FontSize', fontSize) % Quest 3
 
-% yyaxis right % add cycles per degree on the right y axis
-% plot(x1,cy1,'LineWidth',1)
-% ylabel('cycles per degree')
-% ylim(ylc)
-% set(gca, 'YDir','reverse') % flip the right y axis
+
 
 ax2 = nexttile; % both eye plot
 plot(ax2,x1,y1,'LineWidth',2)
 % yline(real_both,'r','LineWidth',2) 
 lh = yline(a1,'LineWidth',2);
 lh.Color = ph.Color;
-% yline(abs(a2-real_right),'-.g','LineWidth',2)
 % legend('VR LogMar score','real score', 'VR average','offset' )
 ylim(yl)
 title('Both eyes')
 
 yline(log10(30/10),'--', 'Meta Q2', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
-% yyaxis right
-% plot(x2,cy2,'LineWidth',1)
-% ylim(ylc)
-% set(gca, 'YDir','reverse')
+
 
 ax3 = nexttile; % right eye plot
 plot(ax3,x2,y2,'LineWidth',2)
@@ -144,7 +101,6 @@ plot(ax3,x2,y2,'LineWidth',2)
 lh = yline(a2,'LineWidth',2);
 lh.Color = ph.Color;
 
-% yline(abs(a3-real_left),'-.g','LineWidth',2)
 % legend('VR','eyechart', 'VR average', 'Location', 'southeast')
 % legend('VR', 'Average', '', 'Location', 'southeast')
 
@@ -219,7 +175,31 @@ exportgraphics(fig2, 'acuity_vr_vs_chart.pdf')
 % line([-.3 1.1], [-.3 1.1]) % identity (perfect performance)
 % lsline
 %%
-% for k = 1:length(fnames) % loop to get data files into one struct 
-%     fname = fnames(k); % get one file
-%     ch = char(fnames(k)); % transform to character array to store into fields
-%     s.vr.(ch(1:end-5)) = 
+f = dir('../data/*_C6.json'); % get relevant data files 
+
+for k = 1:length(f) % loop to get data files into struct 
+    fname = fullfile(f(k).folder, f(k).name); % get one file
+    VRDATAt{k} = readstruct(fname); % read data file into struct
+
+    x = [VRDATA{k}.list.TrialNumber]; % extract trial number and logmar score
+y = [VRDATA{k}.list.LogMAR];
+
+c1 = [VRDATA{k}.list.EyeCondition] == "Both_Eyes"; % extract eye condition
+c2 = [VRDATA{k}.list.EyeCondition] == "Right_Eye";
+c3 = [VRDATA{k}.list.EyeCondition] == "Left_Eye";
+
+x1 = x(c1); % match logmar score to condition
+y1 = y(c1);
+b{k} = (y1);
+
+x2 = x(c2);
+y2 = y(c2);
+r{k} = (y2);
+
+x3 = x(c3);
+y3 = y(c3);
+l{k} = (y3);
+end
+
+[h,p] = ttest2(b{1,3},b{1,5})
+

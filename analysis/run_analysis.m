@@ -52,7 +52,8 @@ y3 = y(c3);
 real_both = -0.1; % real logmar score
 real_right = 0.04;
 real_left = 0.02;
-
+% to do: read excel file of real snellen data
+% to do: put vr threshold into a table
 a1 = mean(y1(end-20:end)); % mean of VR logmar score (average last 20 trials)
 a2 = mean(y2(end-20:end));
 a3 = mean(y3(end-20:end));
@@ -141,7 +142,7 @@ Rall = corrcoef(s.realall,s.vrall); % calculate correlation between real and vr
 % Ruc = corrcoef(s.realuc,s.vruc);
 
 exportgraphics(fig, join(['sub-' VRDATA{k}.list(1).Username '_cond-VR_treshold.pdf'], ''))
-
+% to do: put pdf files into a separate figure folder
 end
 
 %% Plot summary figure across subjects

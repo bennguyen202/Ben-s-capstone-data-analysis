@@ -27,7 +27,8 @@ for k = 1:length(f) % loop to get data files into struct
 end
 
 figfol = '../figures'; % specify figure folder
-snellen_data = readtable('SubIDs.xlsx');
+snellen_raw = readtable('SubIDs.xlsx');
+snellen_data = renamevars(snellen_raw,["Var1","Var2","Right","Var4","Var5","Left","Var7","Var8","Binocular","Var10","Var11"],["subID","IPD","right(c)","right(u4)","right(u2)","left(c)","left(u4)","left(u2)","binocular(c)","binocular(u4)","binocular(u2)"]);
 %% set up variables for plotting
 
 for k = 1:length(f)
@@ -56,9 +57,14 @@ real_right = 0.04;
 real_left = 0.02;
 % to do: read excel file of real snellen data
 % to do: put vr threshold into a table
-a1 = mean(y1(end-20:end)); % mean of VR logmar score (average last 20 trials)
-a2 = mean(y2(end-20:end));
-a3 = mean(y3(end-20:end));
+vr_threshold_both = mean(y1(end-20:end)); % mean of VR logmar score (average last 20 trials)
+vr_threshold_right = mean(y2(end-20:end));
+vr_threshold_left = mean(y3(end-20:end));
+
+username = VRDATA{k}.list.Username;
+subID = {k};
+subname = unique(username);
+vr_threshold(k,:) = table(subID,subname,vr_threshold_both,vr_threshold_right,vr_threshold_left);
 
 
 
@@ -73,7 +79,7 @@ ax1 = nexttile;
 
 ph = plot(ax1,x3,y3,'LineWidth',2); % left eyes plot
 % yline(real_left,'r','LineWidth',2)  % line of ETDRS score
-lh = yline(a3,'LineWidth',2); % line of average VR score
+lh = yline(vr_threshold_left,'LineWidth',2); % line of average VR score
 lh.Color = ph.Color;
 % legend('VR LogMar score','real score', 'VR average','offset' )
 ylim(yl)
@@ -89,7 +95,7 @@ yline(log10(30/10),'--', 'Meta Q2', 'LineWidth',1, 'FontSize', fontSize) % Quest
 ax2 = nexttile; % both eye plot
 plot(ax2,x1,y1,'LineWidth',2)
 % yline(real_both,'r','LineWidth',2) 
-lh = yline(a1,'LineWidth',2);
+lh = yline(vr_threshold_both,'LineWidth',2);
 lh.Color = ph.Color;
 % legend('VR LogMar score','real score', 'VR average','offset' )
 ylim(yl)
@@ -101,7 +107,7 @@ yline(log10(30/10),'--', 'Meta Q2', 'LineWidth',1, 'FontSize', fontSize) % Quest
 ax3 = nexttile; % right eye plot
 plot(ax3,x2,y2,'LineWidth',2)
 % yline(real_right,'r','LineWidth',2) 
-lh = yline(a2,'LineWidth',2);
+lh = yline(vr_threshold_right,'LineWidth',2);
 lh.Color = ph.Color;
 
 % legend('VR','eyechart', 'VR average', 'Location', 'southeast')

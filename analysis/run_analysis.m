@@ -27,7 +27,7 @@ for k = 1:length(f) % loop to get data files into struct
 end
 
 figfol = '../figures'; % specify figure folder
-snellen_raw = readtable('SubIDs.xlsx');
+snellen_raw = readtable('SubIDs.xlsx'); % raw and new table with proper column label
 snellen_data = renamevars(snellen_raw,["Var1","Var2","Right","Var4","Var5","Left","Var7","Var8","Binocular","Var10","Var11"],["subID","IPD","right(c)","right(u4)","right(u2)","left(c)","left(u4)","left(u2)","binocular(c)","binocular(u4)","binocular(u2)"]);
 %% set up variables for plotting
 
@@ -61,7 +61,7 @@ vr_threshold_both = mean(y1(end-20:end)); % mean of VR logmar score (average las
 vr_threshold_right = mean(y2(end-20:end));
 vr_threshold_left = mean(y3(end-20:end));
 
-username = VRDATA{k}.list.Username;
+username = VRDATA{k}.list.Username; % set up table for vr threshold value
 subID = {k};
 subname = unique(username);
 vr_threshold(k,:) = table(subID,subname,vr_threshold_both,vr_threshold_right,vr_threshold_left);

@@ -26,6 +26,8 @@ for k = 1:length(f) % loop to get data files into struct
     VRDATA{k} = readstruct(fname); % read data file into struct
 end
 
+figfol = '../figures'; % specify figure folder
+snellen_data = readtable('SubIDs.xlsx');
 %% set up variables for plotting
 
 for k = 1:length(f)
@@ -140,9 +142,10 @@ s.realall = [0.82 0.86 0.94 0 0 0.02 -0.1 0.04 0.02 0.9 1 0.92 -0.04 0.08 0.02 0
 s.vrall = [0.665497261918232 0.750300732266265 0.763311606785522 0.511119184059796 0.676288799375090 0.676288799375090 0.461175974933904 0.448014772056905 0.508994051604219 0.878368248556045 1.044014133751761 0.848559040157549 0.344963558816919 0.410338024033777 0.409680505491749 0.452044167722371 0.460406194148358 0.510208969938377 0.438672456198216 0.506219309296467 0.501491072476946 0.461504781057158 0.472095399703105 0.622153089897715 0.548618153749264 0.459622033169327 0.454192000057477 0.490120243926443 0.528723041978598 0.772323108065766 0.891009414178191 0.874557659847996 0.895669638661807 0.583411264571096 0.634869161284951 0.839547669133916 0.404905950477337 0.439625371447288 0.436903653647372];
 Rall = corrcoef(s.realall,s.vrall); % calculate correlation between real and vr
 % Ruc = corrcoef(s.realuc,s.vruc);
+figname = join(['sub-' VRDATA{k}.list(1).Username '_cond-VR_treshold.pdf'], ''); % make figure name for individual plot
+filename = fullfile(figfol,figname); 
+exportgraphics(fig, filename);
 
-exportgraphics(fig, join(['sub-' VRDATA{k}.list(1).Username '_cond-VR_treshold.pdf'], ''))
-% to do: put pdf files into a separate figure folder
 end
 
 %% Plot summary figure across subjects
@@ -166,7 +169,7 @@ yline(log10(30/12.5),'--','Meta Q3', 'LineWidth',1,'FontSize', fontSize) % Quest
 yline(log10(30/(34/2)),'--','Apple VP', 'LineWidth',1,'FontSize', fontSize) 
 yline(log10(30/(51/2)),'--','Varjo XR4', 'LineWidth',1,'FontSize', fontSize) 
 
-exportgraphics(fig2, 'acuity_vr_vs_chart.pdf')
+exportgraphics(fig2, '../figures/acuity_vr_vs_chart.pdf')
 % figure % scatter real and vr results (only uncorrected)
 % scatter(s.realuc,s.vruc,'filled')
 % xlabel('Eyechart acuity (logMAR)')
@@ -175,32 +178,6 @@ exportgraphics(fig2, 'acuity_vr_vs_chart.pdf')
 % ylim([-0.3 1.1])
 % line([-.3 1.1], [-.3 1.1]) % identity (perfect performance)
 % lsline
+
 %%
-f = dir('../data/*_C6.json'); % get relevant data files 
-
-for k = 1:length(f) % loop to get data files into struct 
-    fname = fullfile(f(k).folder, f(k).name); % get one file
-    VRDATAt{k} = readstruct(fname); % read data file into struct
-
-    x = [VRDATA{k}.list.TrialNumber]; % extract trial number and logmar score
-y = [VRDATA{k}.list.LogMAR];
-
-c1 = [VRDATA{k}.list.EyeCondition] == "Both_Eyes"; % extract eye condition
-c2 = [VRDATA{k}.list.EyeCondition] == "Right_Eye";
-c3 = [VRDATA{k}.list.EyeCondition] == "Left_Eye";
-
-x1 = x(c1); % match logmar score to condition
-y1 = y(c1);
-b{k} = (y1);
-
-x2 = x(c2);
-y2 = y(c2);
-r{k} = (y2);
-
-x3 = x(c3);
-y3 = y(c3);
-l{k} = (y3);
-end
-
-[h,p] = ttest2(b{1,3},b{1,5})
 

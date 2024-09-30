@@ -40,15 +40,15 @@ c2 = [VRDATA{k}.list.EyeCondition] == "Right_Eye";
 c3 = [VRDATA{k}.list.EyeCondition] == "Left_Eye";
 
 x1 = x(c1); % match logmar score to condition
-y1 = y(c1);
+vr_raw_both = y(c1);
 
 
 x2 = x(c2);
-y2 = y(c2);
+vr_raw_right = y(c2);
 
 
 x3 = x(c3);
-y3 = y(c3);
+vr_raw_left = y(c3);
 
 
 % Where does this data come from? Is subject specific
@@ -57,16 +57,16 @@ real_right = 0.04;
 real_left = 0.02;
 % to do: read excel file of real snellen data
 % to do: put vr threshold into a table
-vr_threshold_both = mean(y1(end-20:end)); % mean of VR logmar score (average last 20 trials)
-vr_threshold_right = mean(y2(end-20:end));
-vr_threshold_left = mean(y3(end-20:end));
+vr_threshold_both = mean(vr_raw_both(end-20:end)); % mean of VR logmar score (average last 20 trials)
+vr_threshold_right = mean(vr_raw_right(end-20:end));
+vr_threshold_left = mean(vr_raw_left(end-20:end));
 
+pat = digitsPattern(3); % pattern for subID
 username = VRDATA{k}.list.Username; % set up table for vr threshold value
-subID = {k};
 subname = unique(username);
+subID = str2double(extract(subname,pat)); % get subID from username
 vr_threshold(k,:) = table(subID,subname,vr_threshold_both,vr_threshold_right,vr_threshold_left);
-
-
+% end
 
 %% plot test
 
@@ -77,7 +77,7 @@ t = tiledlayout(1,3);
 
 ax1 = nexttile;
 
-ph = plot(ax1,x3,y3,'LineWidth',2); % left eyes plot
+ph = plot(ax1,x3,vr_raw_left,'LineWidth',2); % left eyes plot
 % yline(real_left,'r','LineWidth',2)  % line of ETDRS score
 lh = yline(vr_threshold_left,'LineWidth',2); % line of average VR score
 lh.Color = ph.Color;
@@ -93,7 +93,7 @@ yline(log10(30/10),'--', 'Meta Q2', 'LineWidth',1, 'FontSize', fontSize) % Quest
 
 
 ax2 = nexttile; % both eye plot
-plot(ax2,x1,y1,'LineWidth',2)
+plot(ax2,x1,vr_raw_both,'LineWidth',2)
 % yline(real_both,'r','LineWidth',2) 
 lh = yline(vr_threshold_both,'LineWidth',2);
 lh.Color = ph.Color;
@@ -105,7 +105,7 @@ yline(log10(30/10),'--', 'Meta Q2', 'LineWidth',1, 'FontSize', fontSize) % Quest
 
 
 ax3 = nexttile; % right eye plot
-plot(ax3,x2,y2,'LineWidth',2)
+plot(ax3,x2,vr_raw_right,'LineWidth',2)
 % yline(real_right,'r','LineWidth',2) 
 lh = yline(vr_threshold_right,'LineWidth',2);
 lh.Color = ph.Color;
@@ -129,7 +129,7 @@ ylabel(t,'Sloan font size (logMAR)', 'FontSize', fontSize)
 % text(ones(size(ytix))*max(xlim)+0.08*diff(xlim), ytix, ytl, 'Horiz','left', 'Vert','middle', 'Fontsize', fontSize)
 
 % yyaxis right
-% plot(x3,cy3,'LineWidth',1)
+% plot(x3,cvr_raw_left,'LineWidth',1)
 % ylim(ylc)
 % set(gca, 'YDir','reverse')
 
@@ -154,6 +154,7 @@ exportgraphics(fig, filename);
 
 end
 
+vr_snellen = join(vr_threshold,snellen_data); % table with both vr and real snellen threshold
 %% Plot summary figure across subjects
 fig2 = figure; % scatter real and vr results (all)
 markerSize = 50;

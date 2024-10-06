@@ -12,7 +12,7 @@ set(groot,'defaultAxesLineWidth',1)
 set(groot,'defaultLineLineWidth',2)
 set(groot,'defaultAxesTickDir', 'out');
 set(groot,'defaultAxesTickDirMode', 'manual');
-
+% set(0,'DefaultFigureVisible','off'); % figure off
 %% Loop to put all VR data in a struct
 VRDATA = []; % initialize struct
 
@@ -29,6 +29,7 @@ end
 figfol = '../figures'; % specify figure folder
 snellen_raw = readtable('SubIDs.xlsx'); % raw and new table with proper column label
 snellen_data = renamevars(snellen_raw,["Var1","Var2","Right","Var4","Var5","Left","Var7","Var8","Binocular","Var10","Var11"],["subID","IPD","right(c)","right(u4)","right(u2)","left(c)","left(u4)","left(u2)","binocular(c)","binocular(u4)","binocular(u2)"]);
+snellen_data(1,:) = [];
 %% set up variables for plotting
 
 for k = 1:length(f)
@@ -51,12 +52,6 @@ x3 = x(c3);
 vr_raw_left = y(c3);
 
 
-% Where does this data come from? Is subject specific
-real_both = -0.1; % real logmar score
-real_right = 0.04;
-real_left = 0.02;
-% to do: read excel file of real snellen data
-% to do: put vr threshold into a table
 vr_threshold_both = mean(vr_raw_both(end-20:end)); % mean of VR logmar score (average last 20 trials)
 vr_threshold_right = mean(vr_raw_right(end-20:end));
 vr_threshold_left = mean(vr_raw_left(end-20:end));
@@ -66,11 +61,27 @@ username = VRDATA{k}.list.Username; % set up table for vr threshold value
 subname = unique(username);
 subID = str2double(extract(subname,pat)); % get subID from username
 vr_threshold(k,:) = table(subID,subname,vr_threshold_both,vr_threshold_right,vr_threshold_left);
+
+indi = table2array(snellen_data(:,1)==subID); % extract row containing current participant data from snellen table
+data_indi = snellen_data(indi,:);
+cor_con = endsWith(subname,"_C6"); % check if corrected or uncorrected
+
+
+if cor_con == 1
+    snellen_both = table2array(data_indi(1,"binocular(c)"));
+    snellen_left = table2array(data_indi(1,"left(c)"));
+    snellen_right = table2array(data_indi(1,"right(c)"));
+else
+    snellen_both = table2array(data_indi(1,"binocular(u4)"));
+    snellen_left = table2array(data_indi(1,"left(u4)"));
+    snellen_right = table2array(data_indi(1,"right(u4)"));
+end
 % end
 
 %% plot test
 
 fig = figure;
+fig.WindowState = 'maximized';
 yl = [-0.3 1.1]; % set y limit (logMAR)
 
 t = tiledlayout(1,3);
@@ -78,8 +89,8 @@ t = tiledlayout(1,3);
 ax1 = nexttile;
 
 ph = plot(ax1,x3,vr_raw_left,'LineWidth',2); % left eyes plot
-% yline(real_left,'r','LineWidth',2)  % line of ETDRS score
-lh = yline(vr_threshold_left,'LineWidth',2); % line of average VR score
+yline(snellen_left,'r','LineWidth',2)  % line of ETDRS score
+lh = yline(vr_threshold_left,':','LineWidth',2); % line of average VR score
 lh.Color = ph.Color;
 % legend('VR LogMar score','real score', 'VR average','offset' )
 ylim(yl)
@@ -87,27 +98,26 @@ title('Left eye')
 
 % The resolution of the Quest 2 is 20 pixels/degree
 % so, 10 cycles/degree, or log10(30/cycpdeg) logMar
-yline(log10(30/10),'--', 'Meta Q2', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
+yline(log10(30/10),'--', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
 % yline(log10(30/12.5),'--','Meta Q3', 'LineWidth',1, 'FontSize', fontSize) % Quest 3
-
 
 
 ax2 = nexttile; % both eye plot
 plot(ax2,x1,vr_raw_both,'LineWidth',2)
-% yline(real_both,'r','LineWidth',2) 
-lh = yline(vr_threshold_both,'LineWidth',2);
+yline(snellen_both,'r','LineWidth',2) 
+lh = yline(vr_threshold_both,':','LineWidth',2);
 lh.Color = ph.Color;
 % legend('VR LogMar score','real score', 'VR average','offset' )
 ylim(yl)
 title('Both eyes')
 
-yline(log10(30/10),'--', 'Meta Q2', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
+yline(log10(30/10),'--', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
 
 
 ax3 = nexttile; % right eye plot
 plot(ax3,x2,vr_raw_right,'LineWidth',2)
-% yline(real_right,'r','LineWidth',2) 
-lh = yline(vr_threshold_right,'LineWidth',2);
+yline(snellen_right,'r','LineWidth',2) 
+lh = yline(vr_threshold_right,':','LineWidth',2);
 lh.Color = ph.Color;
 
 % legend('VR','eyechart', 'VR average', 'Location', 'southeast')
@@ -116,38 +126,30 @@ lh.Color = ph.Color;
 ylim(yl)
 title('Right eye')
 
-yline(log10(30/10),'--', 'Meta Q2', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
+yline(log10(30/10),'--', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
 
 xlabel(t,'Trial number', 'FontSize', fontSize)
 ylabel(t,'Sloan font size (logMAR)', 'FontSize', fontSize)
 
+legend('raw VR','snellen','VR average','meta Q2','Location','northeastoutside');
 % Add right hand axis
-% Ax = gca;
-% ytix = Ax.YTick; % tick location
-% ytl = string((1./(10.^ytix))*30); % tick label
-% ytl = extractBefore(ytl, min(3, ytl.strlength())+1); % truncate strings
-% text(ones(size(ytix))*max(xlim)+0.08*diff(xlim), ytix, ytl, 'Horiz','left', 'Vert','middle', 'Fontsize', fontSize)
+Ax = gca;
+ytix = Ax.YTick; % tick location
+ytl = string((1./(10.^ytix))*30); % tick label
+ytl = extractBefore(ytl, min(3, ytl.strlength())+1); % truncate strings
+text(ones(size(ytix))*max(xlim)+0.08*diff(xlim), ytix, ytl, 'Horiz','left', 'Vert','middle', 'Fontsize', fontSize)
 
-% yyaxis right
-% plot(x3,cvr_raw_left,'LineWidth',1)
-% ylim(ylc)
-% set(gca, 'YDir','reverse')
+
 
 % Create a common ylabel on the right side
-% annotation('textbox',[1 .4 .5 .1], ...
-%     'String','Acuity (cyc/deg)','EdgeColor','none', 'Rotation', 90, 'FontSize', fontSize)
+annotation('textbox',[1 .4 .5 .1], ...
+    'String','Acuity (cyc/deg)','EdgeColor','none', 'Rotation', 90, 'FontSize', fontSize)
 
 % Adjust the figure's position to make room for the ylabel
 % fig.Position(3) = fig.Position(3) + .1; % does not currently work
 
 %% stats stuff
-% input real and average vr data manually
-% s.realuc = [0.82 0.86 0.94 0.9 1 0.92 0.62 0.54 0.8 0.96 0.9 0.96 0.82 0.86 0.92];
-s.realall = [0.82 0.86 0.94 0 0 0.02 -0.1 0.04 0.02 0.9 1 0.92 -0.04 0.08 0.02 0.1 0 0.1 -0.1 -0.06 -0.06 -0.2 -0.14 0.24 -0.02 0.16 -0.1 0.62 0.54 0.8 0.96 0.9 0.96 0.82 0.86 0.92 -0.06 -0.02 0.06];
-% s.vruc = [0.665497261918232 0.750300732266265 0.763311606785522 0.878368248556045 1.044014133751761 0.848559040157549 0.490120243926443 0.528723041978598 0.772323108065766 0.891009414178191 0.874557659847996 0.895669638661807 0.583411264571096 0.634869161284951 0.839547669133916];
-s.vrall = [0.665497261918232 0.750300732266265 0.763311606785522 0.511119184059796 0.676288799375090 0.676288799375090 0.461175974933904 0.448014772056905 0.508994051604219 0.878368248556045 1.044014133751761 0.848559040157549 0.344963558816919 0.410338024033777 0.409680505491749 0.452044167722371 0.460406194148358 0.510208969938377 0.438672456198216 0.506219309296467 0.501491072476946 0.461504781057158 0.472095399703105 0.622153089897715 0.548618153749264 0.459622033169327 0.454192000057477 0.490120243926443 0.528723041978598 0.772323108065766 0.891009414178191 0.874557659847996 0.895669638661807 0.583411264571096 0.634869161284951 0.839547669133916 0.404905950477337 0.439625371447288 0.436903653647372];
-Rall = corrcoef(s.realall,s.vrall); % calculate correlation between real and vr
-% Ruc = corrcoef(s.realuc,s.vruc);
+
 figname = join(['sub-' VRDATA{k}.list(1).Username '_cond-VR_treshold.pdf'], ''); % make figure name for individual plot
 filename = fullfile(figfol,figname); 
 exportgraphics(fig, filename);
@@ -155,10 +157,19 @@ exportgraphics(fig, filename);
 end
 
 vr_snellen = join(vr_threshold,snellen_data); % table with both vr and real snellen threshold
+sub_ext = table2array(vr_snellen(:,"subname"));
+cor_data_con = endsWith(sub_ext,"_C6"); % separate above table into corrected and uncorrected for plotting
+uncor_data_con = endsWith(sub_ext,"_UC6");
+vr_snellen_cor = vr_snellen(cor_data_con,:);
+vr_snellen_uncor = vr_snellen(uncor_data_con,:);
 %% Plot summary figure across subjects
-fig2 = figure; % scatter real and vr results (all)
-markerSize = 50;
-sp = scatter(s.realall,s.vrall, markerSize,'filled');
+fig2 = figure; % scatter snellen and vr results
+fig2.WindowState = 'maximized';
+% markerSize = 50;
+sp = scatter(vr_snellen_cor,["binocular(c)","right(c)","left(c)"],["vr_threshold_both","vr_threshold_right","vr_threshold_left"],"filled"); % corrected
+hold on
+sp2 = scatter(vr_snellen_uncor,["binocular(u4)","right(u4)","left(u4)"],["vr_threshold_both","vr_threshold_right","vr_threshold_left"],"filled"); % uncorrected
+hold off
 xlabel('ETDRS eyechart acuity (logMAR)')
 ylabel('VR acuity (logMAR)')
 axis square
@@ -177,14 +188,5 @@ yline(log10(30/(34/2)),'--','Apple VP', 'LineWidth',1,'FontSize', fontSize)
 yline(log10(30/(51/2)),'--','Varjo XR4', 'LineWidth',1,'FontSize', fontSize) 
 
 exportgraphics(fig2, '../figures/acuity_vr_vs_chart.pdf')
-% figure % scatter real and vr results (only uncorrected)
-% scatter(s.realuc,s.vruc,'filled')
-% xlabel('Eyechart acuity (logMAR)')
-% ylabel('VR acuity (logMAR)')
-% xlim([-0.3 1.1])
-% ylim([-0.3 1.1])
-% line([-.3 1.1], [-.3 1.1]) % identity (perfect performance)
-% lsline
 
-%%
-
+close all

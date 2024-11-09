@@ -26,7 +26,7 @@ right_uc2 = table2array(chart_2(:,"right(u4)"));
 
 acu_1 = [binocular_c1,binocular_uc1,left_c1,left_uc1,right_c1,right_uc1];
 acu_2 = [binocular_c2,binocular_uc2,left_c2,left_uc2,right_c2,right_uc2];
-rsq_acu = corrcoef(aci_1,acu_2).^2;
+rsq_acu = corrcoef(acu_1,acu_2).^2;
 txt_acu = ['r-squared =', num2str(rsq_acu(2,1))];
 
 %% contrast sensitivity data
@@ -43,31 +43,44 @@ cs1 = [binocular_cs1,left_cs1,right_cs1];
 cs2 = [binocular_cs2,left_cs2,right_cs2];
 rsq_cs = corrcoef(cs1,cs2).^2;
 txt_cs = ['r-squared =', num2str(rsq_cs(2,1))];
+%% bland altman plot acuity
+leg_acu = {'binocular(c)', 'binocular(u)','left(c)','Left(u)','right(c)','right(u)'};
+BlandAltman(acu_1,acu_2,'chart acuity','bland-altman plot (acuity)',leg_acu,'markerSize',7);
+fig = gcf;
+fig.WindowState = "maximized";
+exportgraphics(fig,'../figures/acuity_chart_reliability.pdf')
+
+%% bland altman plot contrast sensitivity
+leg_cs = {'binocular','left','right'};
+BlandAltman(cs1,cs2,'chart contrast sensitivity','bland-altman plot (cs)',leg_cs,'markerSize',7);
+fig2 = gcf;
+fig2.WindowState = "maximized";
+exportgraphics(fig2,'../figures/contrast_chart_reliability.pdf')
 %% scatter plot of reliability of visual acuity between 2 sessions
-fig = figure
-fig.WindowState = 'maximized';
-scatter(acu_1,acu_2,"filled");
-xlim([-0.3 1.1]);
-ylim([-0.3 1.1]);
-line([-.3 1.1], [-.3 1.1],'Color','k', 'LineWidth', 1);
-text(-0.2,1,txt_acu,'Color','red','FontSize',14);
-xlabel('session 1 (logMAR)');
-ylabel('session 2 (logMAR)');
-title('reliability of Snellen chart');
-legend('binocular(c)', 'binocular(u)','left(c)','Left(u)','right(c)','right(u)','Location','northeastoutside');
-exportgraphics(fig, '../figures/acuity_chart_reliability.pdf');
+% fig = figure
+% fig.WindowState = 'maximized';
+% scatter(acu_1,acu_2,"filled");
+% xlim([-0.3 1.1]);
+% ylim([-0.3 1.1]);
+% line([-.3 1.1], [-.3 1.1],'Color','k', 'LineWidth', 1);
+% text(-0.2,1,txt_acu,'Color','red','FontSize',14);
+% xlabel('session 1 (logMAR)');
+% ylabel('session 2 (logMAR)');
+% title('reliability of Snellen chart');
+% legend('binocular(c)', 'binocular(u)','left(c)','Left(u)','right(c)','right(u)','Location','northeastoutside');
+% exportgraphics(fig, '../figures/acuity_chart_reliability.pdf');
 
 %% scatter plot of reliability of contrast sensitivity between 2 sessions
-fig2 = figure
-fig2.WindowState = 'maximized';
-scatter(cs1,cs2,"filled");
-xlim([0 2.25]);
-ylim([0 2.25]);
-line([0 2.25], [0 2.25],'Color','k', 'LineWidth', 1);
-text(0.5,2.1,txt_cs,'Color','red','FontSize',14);
-xlabel('session 1 (logLuminance)');
-ylabel('session 2 (logLuminance)');
-title('reliability of Pelli-Robson chart');
-legend('binocular','left','right','Location','northeastoutside');
-exportgraphics(fig2, '../figures/sensitivity_chart_reliability.pdf');
+% fig2 = figure
+% fig2.WindowState = 'maximized';
+% scatter(cs1,cs2,"filled");
+% xlim([0 2.25]);
+% ylim([0 2.25]);
+% line([0 2.25], [0 2.25],'Color','k', 'LineWidth', 1);
+% text(0.5,2.1,txt_cs,'Color','red','FontSize',14);
+% xlabel('session 1 (log CS)');
+% ylabel('session 2 (log CS)');
+% title('reliability of Pelli-Robson chart');
+% legend('binocular','left','right','Location','northeastoutside');
+% exportgraphics(fig2, '../figures/sensitivity_chart_reliability.pdf');
 

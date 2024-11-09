@@ -157,11 +157,16 @@ exportgraphics(fig, filename);
 end
 
 vr_snellen = join(vr_threshold,snellen_data); % table with both vr and real snellen threshold
+writetable(vr_snellen, '../data/vr_threshold.xlsx');
 sub_ext = table2array(vr_snellen(:,"subname"));
 cor_data_con = endsWith(sub_ext,"_C6"); % separate above table into corrected and uncorrected for plotting
 uncor_data_con = endsWith(sub_ext,"_UC6");
 vr_snellen_cor = vr_snellen(cor_data_con,:);
 vr_snellen_uncor = vr_snellen(uncor_data_con,:);
+rsq_c = corrcoef(vr_snellen_cor{:,["binocular(c)","right(c)","left(c)"]},vr_snellen_cor{:,["vr_threshold_both","vr_threshold_right","vr_threshold_left"]}).^2;
+rsq_uc = corrcoef(vr_snellen_uncor{:,["binocular(u4)","right(u4)","left(u4)"]},vr_snellen_uncor{:,["vr_threshold_both","vr_threshold_right","vr_threshold_left"]}).^2;
+txt_c = ['r-squared corrected = ' num2str(rsq_c(2,1))];
+txt_uc = ['r-squared uncorrected = ' num2str(rsq_uc(2,1))];
 %% Plot summary figure across subjects
 fig2 = figure; % scatter snellen and vr results
 fig2.WindowState = 'maximized';
@@ -170,6 +175,8 @@ sp = scatter(vr_snellen_cor,["binocular(c)","right(c)","left(c)"],["vr_threshold
 hold on
 sp2 = scatter(vr_snellen_uncor,["binocular(u4)","right(u4)","left(u4)"],["vr_threshold_both","vr_threshold_right","vr_threshold_left"],"filled"); % uncorrected
 hold off
+text(-0.2,1,txt_c,'Color','red','FontSize',14);
+text(-0.2,0.92,txt_uc,'Color','red','FontSize',14);
 xlabel('ETDRS eyechart acuity (logMAR)')
 ylabel('VR acuity (logMAR)')
 axis square

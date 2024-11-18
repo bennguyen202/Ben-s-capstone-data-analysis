@@ -48,14 +48,14 @@ leg_acu = {'binocular(c)', 'binocular(u)','left(c)','Left(u)','right(c)','right(
 BlandAltman(acu_1,acu_2,'chart acuity','bland-altman plot (acuity)',leg_acu,'markerSize',7);
 fig = gcf;
 fig.WindowState = "maximized";
-exportgraphics(fig,'../figures/acuity_chart_reliability.pdf')
+exportgraphics(fig,'../figures/new/acuity_chart_reliability.pdf')
 
 %% bland altman plot contrast sensitivity
 leg_cs = {'binocular','left','right'};
 BlandAltman(cs1,cs2,'chart contrast sensitivity','bland-altman plot (cs)',leg_cs,'markerSize',7);
 fig2 = gcf;
 fig2.WindowState = "maximized";
-exportgraphics(fig2,'../figures/contrast_chart_reliability.pdf')
+exportgraphics(fig2,'../figures/new/contrast_chart_reliability.pdf')
 %% scatter plot of reliability of visual acuity between 2 sessions
 % fig = figure
 % fig.WindowState = 'maximized';

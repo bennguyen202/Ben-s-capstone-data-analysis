@@ -108,8 +108,8 @@ vr_threshold_ac_02 = vr_threshold_ac(ac_02,:);
 ac_ses01 = table2array(vr_threshold_ac_01(:,[2 3 4]));
 ac_ses02 = table2array(vr_threshold_ac_02(:,[2 3 4]));
 
-cs_ses01 = table2array(vr_threshold_cs_01(:,[2 3 4]));
-cs_ses02 = table2array(vr_threshold_cs_02(:,[2 3 4]));
+cs_ses01 = abs(table2array(vr_threshold_cs_01(:,[2 3 4])));
+cs_ses02 = abs(table2array(vr_threshold_cs_02(:,[2 3 4])));
 
 % bland altman plot
 leg_ac = {'binocular','right','left'};

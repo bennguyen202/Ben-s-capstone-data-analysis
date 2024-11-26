@@ -48,7 +48,7 @@ leg_acu = {'binocular(c)', 'binocular(u)','left(c)','Left(u)','right(c)','right(
 BlandAltman(acu_1,acu_2,'chart acuity','bland-altman plot (acuity)',leg_acu,'markerSize',7);
 fig = gcf;
 fig.WindowState = "maximized";
-exportgraphics(fig,'../figures/new/acuity_chart_reliability.pdf')
+exportgraphics(fig,'../figures/new/acuity_chart_reliability.pdf');
 
 %% bland altman plot contrast sensitivity
 leg_cs = {'binocular','left','right'};
@@ -84,3 +84,23 @@ exportgraphics(fig2,'../figures/new/contrast_chart_reliability.pdf')
 % legend('binocular','left','right','Location','northeastoutside');
 % exportgraphics(fig2, '../figures/sensitivity_chart_reliability.pdf');
 
+%% vr acuity psignifit reliability
+vr_ac_1 = readmatrix('thresholds_acuity.xlsx','Sheet','session 1');
+vr_ac_2 = readmatrix('thresholds_acuity.xlsx','Sheet','session 2');
+vr_psig1_ac = vr_ac_1(:,[ 3 4 5]);
+vr_psig2_ac = vr_ac_2(:,[ 3 4 5]);
+leg = {'right','left','binocular'};
+BlandAltman(vr_psig1_ac,vr_psig2_ac,'vr acuity','bland-altman plot (acuity)',leg,'markerSize',7);
+fig3 = gcf;
+fig3.WindowState = "maximized";
+exportgraphics(fig3,'../figures/new/acuity_vr_reliability_psignifit.pdf');
+%% vr contrast psignifit reliability
+vr_cs_1 = readmatrix('thresholds_contrast.xlsx','Sheet','session 1');
+vr_cs_2 = readmatrix('thresholds_contrast.xlsx','Sheet','session 2');
+vr_psig1_cs = vr_cs_1(:,[ 3 4 5]);
+vr_psig2_cs = vr_cs_2(:,[ 3 4 5]);
+leg = {'right','left','binocular'};
+BlandAltman(vr_psig1_cs,vr_psig2_cs,'vr contrast sensitivity','bland-altman plot (contrast)',leg,'markerSize',7);
+fig4 = gcf;
+fig4.WindowState = "maximized";
+exportgraphics(fig4,'../figures/new/contrast_vr_reliability_psignifit.pdf');

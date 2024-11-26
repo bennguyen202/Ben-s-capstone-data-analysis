@@ -97,12 +97,14 @@ cs_01 = endsWith(table2array(vr_threshold_cs(:,"subID")),'_01');
 vr_threshold_cs_01 = vr_threshold_cs(cs_01,:);
 cs_02 = endsWith(table2array(vr_threshold_cs(:,"subID")),'_02');
 vr_threshold_cs_02 = vr_threshold_cs(cs_02,:);
+writetable(vr_threshold_cs_01,'vr_threshold_cs.xlsx');
 
 % acuity tables
 ac_01 = contains(table2array(vr_threshold_ac(:,"subID")),'_01');
 vr_threshold_ac_01 = vr_threshold_ac(ac_01,:);
 ac_02 = contains(table2array(vr_threshold_ac(:,"subID")),'_02');
 vr_threshold_ac_02 = vr_threshold_ac(ac_02,:);
+writetable(vr_threshold_ac_01,'vr_threshold_ac.xlsx');
 
 % set up variables for plot
 ac_ses01 = table2array(vr_threshold_ac_01(:,[2 3 4]));
@@ -116,11 +118,11 @@ leg_ac = {'binocular','right','left'};
 BlandAltman(ac_ses01,ac_ses02,'vr acuity average','bland-altman plot VR (acuity)',leg_ac,'markerSize',7);
 fig = gcf;
 fig.WindowState = "maximized";
-exportgraphics(fig,'../figures/new/acuity_VR_reliability.pdf')
+exportgraphics(fig,'../figures/new/acuity_VR_reliability_average.pdf')
 
 
 leg_cs = {'binocular','right','left'};
 BlandAltman(cs_ses01,cs_ses02,'vr contrast average','bland-altman plot VR (contrast)',leg_cs,'markerSize',7);
 fig2 = gcf;
 fig2.WindowState = "maximized";
-exportgraphics(fig2,'../figures/new/contrast_VR_reliability.pdf')
+exportgraphics(fig2,'../figures/new/contrast_VR_reliability_average.pdf')

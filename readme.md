@@ -1,3 +1,3 @@
 Documentation
 
-Describe the structure
+Describe the repository structure

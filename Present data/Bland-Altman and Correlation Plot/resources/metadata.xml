@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addOn>
+  <identifier>e5a684ea-4a80-11e4-9553-005056977bd0</identifier>
+  <displayType>Collection</displayType>
+  <translatedDisplayType>
+    <en_US>Collection</en_US>
+    <ja_JP>コレクション</ja_JP>
+    <ko_KR>컬렉션</ko_KR>
+    <zh_CN>集合</zh_CN>
+  </translatedDisplayType>
+  <name>Bland-Altman and Correlation Plot</name>
+  <author>Ran Klein</author>
+  <version>1.12.0.0</version>
+  <downloadUrl>https://www.mathworks.com/matlabcentral/mlc-downloads/downloads/e5a684ea-4a80-11e4-9553-005056977bd0/bf85b5a7-9892-49d5-8e94-1cff6f9eb81f/packages/zip?src=addons_ml_desktop_install&amp;profile_id=28962485&amp;license=618777&amp;release_family=R2023b</downloadUrl>
+  <licenseUrl>https://addons.mathworks.com/registry/v1/e5a684ea-4a80-11e4-9553-005056977bd0/1.12.0.0/-/license</licenseUrl>
+  <previewImageUrl>https://www.mathworks.com/responsive_image/160/120/0/0/0/cache/matlabcentral/mlc-downloads/downloads/e5a684ea-4a80-11e4-9553-005056977bd0/bf85b5a7-9892-49d5-8e94-1cff6f9eb81f/images/screenshot.png</previewImageUrl>
+  <releaseNotesUrl>https://www.mathworks.com/add-ons/e5a684ea-4a80-11e4-9553-005056977bd0/bf85b5a7-9892-49d5-8e94-1cff6f9eb81f/releaseNotes</releaseNotesUrl>
+  <installationFolder>Collections</installationFolder>
+</addOn>

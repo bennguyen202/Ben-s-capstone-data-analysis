@@ -5,8 +5,8 @@ clc
 %% Dependencies
 %
 % BlandAltman - https://www.mathworks.com/matlabcentral/fileexchange/45049-bland-altman-and-correlation-plot/
-
-addpath(genpath(pwd))
+blandpath = '../Bland-Altman and Correlation Plot';
+addpath(blandpath);
 
 %% Loop to put all VR data in a struct
 % visual acuity data
@@ -135,7 +135,7 @@ acu_data = readmatrix("chart_vs_vr_acuity.xlsx");
 leg_new = {'right','left','binocular'};
 chart_data_ac = acu_data(:,[5 6 7]);
 vr_data_ac = acu_data(:,[2 3 4]);
-BlandAltman(vr_data_ac,chart_data_ac,{'vr','chart','logMar'},'bland-altman plot VR vs chart (acuity)',leg_new,'markerSize',7);
+BlandAltman(chart_data_ac,vr_data_ac,{'chart','vr','logMar'},'bland-altman plot VR vs chart (acuity)',leg_new,'markerSize',7);
 fig5 = gcf;
 exportgraphics(fig5,'../figures/chart_vs_vr_acuity.pdf');
 %% chart vs vr contrast
@@ -143,6 +143,6 @@ cs_data = readmatrix("chart_vs_vr_contrast.xlsx");
 
 chart_data_cs = cs_data(:,[5 6 7]);
 vr_data_cs = cs_data(:,[2 3 4]);
-BlandAltman(vr_data_cs,chart_data_cs,{'vr','chart'},'bland-altman plot VR vs chart (contrast)',leg_new,'markerSize',7);
+BlandAltman(chart_data_cs,vr_data_cs,{'chart','vr'},'bland-altman plot VR vs chart (contrast)',leg_new,'markerSize',7);
 fig6 = gcf;
 exportgraphics(fig6,'../figures/chart_vs_vr_contrast.pdf');

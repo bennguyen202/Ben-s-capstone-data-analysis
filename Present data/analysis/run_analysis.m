@@ -8,6 +8,16 @@ clc
 blandpath = '../Bland-Altman and Correlation Plot';
 addpath(blandpath);
 
+%% set figure defaults
+fontSize = 14; 
+set(groot,'defaultAxesFontSize', fontSize)
+set(groot,'defaultTextFontSize', fontSize)
+set(groot,'defaultLegendFontSize', fontSize)
+set(groot,'defaultAxesLineWidth',1)
+set(groot,'defaultLineLineWidth',2)
+set(groot,'defaultAxesTickDir', 'out');
+set(groot,'defaultAxesTickDirMode', 'manual');
+
 %% Loop to put all VR data in a struct
 % visual acuity data
 f_ac = dir('../data/*ecc*.json'); % get relevant data files
@@ -135,9 +145,15 @@ acu_data = readmatrix("chart_vs_vr_acuity.xlsx");
 leg_new = {'right','left','binocular'};
 chart_data_ac = acu_data(:,[5 6 7]);
 vr_data_ac = acu_data(:,[2 3 4]);
-BlandAltman(chart_data_ac,vr_data_ac,{'chart','vr','logMar'},'bland-altman plot VR vs chart (acuity)',leg_new,'markerSize',7);
-fig5 = gcf;
-exportgraphics(fig5,'../figures/chart_vs_vr_acuity.pdf');
+
+[rpc, fig, stats] = BlandAltman(chart_data_ac,vr_data_ac,{'chart','vr','logMar'},'bland-altman plot VR vs chart (acuity)',leg_new,'markerSize',7);
+
+% add reference lineshold on
+% subplot(1,2,1);
+yline(fig.Children(4), log10(30/10),'--', 'Quest 2', 'LineWidth',1,'FontSize', fontSize,'HandleVisibility','off') % Quest 2
+yline(fig.Children(4), log10(30/12.5),'--','Quest 3', 'LineWidth',1,'FontSize', fontSize,'HandleVisibility','off') % Quest 3
+
+exportgraphics(gcf,'../figures/chart_vs_vr_acuity.pdf');
 %% chart vs vr contrast
 cs_data = readmatrix("chart_vs_vr_contrast.xlsx");
 

@@ -151,7 +151,7 @@ vr_data_ac = acu_data(:,[2 3 4]);
 % add reference lineshold on
 % subplot(1,2,1);
 yline(fig.Children(4), log10(30/10),'--', 'Quest 2', 'LineWidth',1,'FontSize', fontSize,'HandleVisibility','off') % Quest 2
-yline(fig.Children(4), log10(30/12.5),'--','Quest 3', 'LineWidth',1,'FontSize', fontSize,'HandleVisibility','off') % Quest 3
+% yline(fig.Children(4), log10(30/12.5),'--','Quest 3', 'LineWidth',1,'FontSize', fontSize,'HandleVisibility','off') % Quest 3
 
 exportgraphics(gcf,'../figures/chart_vs_vr_acuity.pdf');
 %% chart vs vr contrast

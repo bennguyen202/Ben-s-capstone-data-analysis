@@ -150,7 +150,7 @@ vr_data_ac = acu_data(:,[2 3 4]);
 
 % add reference lineshold on
 % subplot(1,2,1);
-yline(fig.Children(4), log10(30/10),'--', 'Quest 2', 'LineWidth',1,'FontSize', fontSize,'HandleVisibility','off') % Quest 2
+% yline(fig.Children(4), log10(30/10),'--', 'Quest 2', 'LineWidth',1,'FontSize', fontSize,'HandleVisibility','off') % Quest 2
 % yline(fig.Children(4), log10(30/12.5),'--','Quest 3', 'LineWidth',1,'FontSize', fontSize,'HandleVisibility','off') % Quest 3
 
 exportgraphics(gcf,'../figures/chart_vs_vr_acuity.pdf');
@@ -159,6 +159,7 @@ cs_data = readmatrix("chart_vs_vr_contrast.xlsx");
 
 chart_data_cs = cs_data(:,[5 6 7]);
 vr_data_cs = cs_data(:,[2 3 4]);
-BlandAltman(chart_data_cs,vr_data_cs,{'chart','vr'},'bland-altman plot VR vs chart (contrast)',leg_new,'markerSize',7);
+BlandAltman(chart_data_cs,vr_data_cs,{'chart','vr'},'bland-altman plot VR vs chart (contrast)',leg_new,'markerSize',7,'baYLimMode',[-4 -2]);
 fig6 = gcf;
+
 exportgraphics(fig6,'../figures/chart_vs_vr_contrast.pdf');

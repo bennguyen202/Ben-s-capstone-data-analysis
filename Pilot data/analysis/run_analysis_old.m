@@ -80,79 +80,79 @@ end
 
 %% plot test
 
-fig = figure;
-fig.WindowState = 'maximized';
-yl = [-0.3 1.1]; % set y limit (logMAR)
-
-t = tiledlayout(1,3);
-
-ax1 = nexttile;
-
-ph = plot(ax1,x3,vr_raw_left,'LineWidth',2); % left eyes plot
-yline(snellen_left,'r','LineWidth',2)  % line of ETDRS score
-lh = yline(vr_threshold_left,':','LineWidth',2); % line of average VR score
-lh.Color = ph.Color;
-% legend('VR LogMar score','real score', 'VR average','offset' )
-ylim(yl)
-title('Left eye')
-
-% The resolution of the Quest 2 is 20 pixels/degree
-% so, 10 cycles/degree, or log10(30/cycpdeg) logMar
-yline(log10(30/10),'--', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
-% yline(log10(30/12.5),'--','Meta Q3', 'LineWidth',1, 'FontSize', fontSize) % Quest 3
-
-
-ax2 = nexttile; % both eye plot
-plot(ax2,x1,vr_raw_both,'LineWidth',2)
-yline(snellen_both,'r','LineWidth',2) 
-lh = yline(vr_threshold_both,':','LineWidth',2);
-lh.Color = ph.Color;
-% legend('VR LogMar score','real score', 'VR average','offset' )
-ylim(yl)
-title('Both eyes')
-
-yline(log10(30/10),'--', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
-
-
-ax3 = nexttile; % right eye plot
-plot(ax3,x2,vr_raw_right,'LineWidth',2)
-yline(snellen_right,'r','LineWidth',2) 
-lh = yline(vr_threshold_right,':','LineWidth',2);
-lh.Color = ph.Color;
-
-% legend('VR','eyechart', 'VR average', 'Location', 'southeast')
-% legend('VR', 'Average', '', 'Location', 'southeast')
-
-ylim(yl)
-title('Right eye')
-
-yline(log10(30/10),'--', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
-
-xlabel(t,'Trial number', 'FontSize', fontSize)
-ylabel(t,'Sloan font size (logMAR)', 'FontSize', fontSize)
-
-legend('raw VR','snellen','VR average','meta Q2','Location','northeastoutside');
-% Add right hand axis
-Ax = gca;
-ytix = Ax.YTick; % tick location
-ytl = string((1./(10.^ytix))*30); % tick label
-ytl = extractBefore(ytl, min(3, ytl.strlength())+1); % truncate strings
-text(ones(size(ytix))*max(xlim)+0.08*diff(xlim), ytix, ytl, 'Horiz','left', 'Vert','middle', 'Fontsize', fontSize)
-
-
-
-% Create a common ylabel on the right side
-annotation('textbox',[1 .4 .5 .1], ...
-    'String','Acuity (cyc/deg)','EdgeColor','none', 'Rotation', 90, 'FontSize', fontSize)
-
-% Adjust the figure's position to make room for the ylabel
-% fig.Position(3) = fig.Position(3) + .1; % does not currently work
-
-%% stats stuff
-
-figname = join(['sub-' VRDATA{k}.list(1).Username '_cond-VR_treshold.pdf'], ''); % make figure name for individual plot
-filename = fullfile(figfol,figname); 
-exportgraphics(fig, filename);
+% fig = figure;
+% fig.WindowState = 'maximized';
+% yl = [-0.3 1.1]; % set y limit (logMAR)
+% 
+% t = tiledlayout(1,3);
+% 
+% ax1 = nexttile;
+% 
+% ph = plot(ax1,x3,vr_raw_left,'LineWidth',2); % left eyes plot
+% yline(snellen_left,'r','LineWidth',2)  % line of ETDRS score
+% lh = yline(vr_threshold_left,':','LineWidth',2); % line of average VR score
+% lh.Color = ph.Color;
+% % legend('VR LogMar score','real score', 'VR average','offset' )
+% ylim(yl)
+% title('Left eye')
+% 
+% % The resolution of the Quest 2 is 20 pixels/degree
+% % so, 10 cycles/degree, or log10(30/cycpdeg) logMar
+% yline(log10(30/10),'--', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
+% % yline(log10(30/12.5),'--','Meta Q3', 'LineWidth',1, 'FontSize', fontSize) % Quest 3
+% 
+% 
+% ax2 = nexttile; % both eye plot
+% plot(ax2,x1,vr_raw_both,'LineWidth',2)
+% yline(snellen_both,'r','LineWidth',2) 
+% lh = yline(vr_threshold_both,':','LineWidth',2);
+% lh.Color = ph.Color;
+% % legend('VR LogMar score','real score', 'VR average','offset' )
+% ylim(yl)
+% title('Both eyes')
+% 
+% yline(log10(30/10),'--', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
+% 
+% 
+% ax3 = nexttile; % right eye plot
+% plot(ax3,x2,vr_raw_right,'LineWidth',2)
+% yline(snellen_right,'r','LineWidth',2) 
+% lh = yline(vr_threshold_right,':','LineWidth',2);
+% lh.Color = ph.Color;
+% 
+% % legend('VR','eyechart', 'VR average', 'Location', 'southeast')
+% % legend('VR', 'Average', '', 'Location', 'southeast')
+% 
+% ylim(yl)
+% title('Right eye')
+% 
+% yline(log10(30/10),'--', 'LineWidth',1, 'FontSize', fontSize) % Quest 2
+% 
+% xlabel(t,'Trial number', 'FontSize', fontSize)
+% ylabel(t,'Sloan font size (logMAR)', 'FontSize', fontSize)
+% 
+% legend('raw VR','snellen','VR average','meta Q2','Location','northeastoutside');
+% % Add right hand axis
+% Ax = gca;
+% ytix = Ax.YTick; % tick location
+% ytl = string((1./(10.^ytix))*30); % tick label
+% ytl = extractBefore(ytl, min(3, ytl.strlength())+1); % truncate strings
+% text(ones(size(ytix))*max(xlim)+0.08*diff(xlim), ytix, ytl, 'Horiz','left', 'Vert','middle', 'Fontsize', fontSize)
+% 
+% 
+% 
+% % Create a common ylabel on the right side
+% annotation('textbox',[1 .4 .5 .1], ...
+%     'String','Acuity (cyc/deg)','EdgeColor','none', 'Rotation', 90, 'FontSize', fontSize)
+% 
+% % Adjust the figure's position to make room for the ylabel
+% % fig.Position(3) = fig.Position(3) + .1; % does not currently work
+% 
+% %% stats stuff
+% 
+% figname = join(['sub-' VRDATA{k}.list(1).Username '_cond-VR_treshold.pdf'], ''); % make figure name for individual plot
+% filename = fullfile(figfol,figname); 
+% exportgraphics(fig, filename);
 
 end
 
@@ -165,8 +165,8 @@ vr_snellen_cor = vr_snellen(cor_data_con,:);
 vr_snellen_uncor = vr_snellen(uncor_data_con,:);
 rsq_c = corrcoef(vr_snellen_cor{:,["binocular(c)","right(c)","left(c)"]},vr_snellen_cor{:,["vr_threshold_both","vr_threshold_right","vr_threshold_left"]}).^2;
 rsq_uc = corrcoef(vr_snellen_uncor{:,["binocular(u4)","right(u4)","left(u4)"]},vr_snellen_uncor{:,["vr_threshold_both","vr_threshold_right","vr_threshold_left"]}).^2;
-txt_c = ['r-squared corrected = ' num2str(rsq_c(2,1))];
-txt_uc = ['r-squared uncorrected = ' num2str(rsq_uc(2,1))];
+txt_c = ['r^2 corrected = ' num2str(round(rsq_c(2,1),2))];
+txt_uc = ['r^2 uncorrected = ' num2str(round(rsq_uc(2,1),2))];
 %% Plot summary figure across subjects
 fig2 = figure; % scatter snellen and vr results
 fig2.WindowState = 'maximized';
@@ -175,8 +175,8 @@ sp = scatter(vr_snellen_cor,["binocular(c)","right(c)","left(c)"],["vr_threshold
 hold on
 sp2 = scatter(vr_snellen_uncor,["binocular(u4)","right(u4)","left(u4)"],["vr_threshold_both","vr_threshold_right","vr_threshold_left"]); % uncorrected
 hold off
-text(-0.2,1,txt_c,'Color','red','FontSize',14);
-text(-0.2,0.92,txt_uc,'Color','red','FontSize',14);
+text(-0.2,1,txt_c,'Color','red','FontSize',17);
+text(-0.2,0.92,txt_uc,'Color','red','FontSize',17);
 xlabel('ETDRS eyechart acuity (logMAR)')
 ylabel('VR acuity (logMAR)')
 axis square
@@ -190,7 +190,7 @@ Ax = gca;
 hs = findobj(gca, 'Type','scatter');
 NrPoints = numel(hs(1).XData) + numel(hs(2).XData) + numel(hs(3).XData) + numel(hs(4).XData) + numel(hs(5).XData) + numel(hs(6).XData);
 txt_n = ['n = ' num2str(NrPoints)];
-text(-0.2,1.07,txt_n,'Color','red','FontSize',14);
+text(-0.2,1.07,txt_n,'Color','red','FontSize',17);
 % The resolution of the Quest 2 is 20 pixels/degree
 % so, 10 cycles/degree, or log10(30/cycpdeg) logMar
 yline(log10(30/(9.81/2)),'--','Rift CV1', 'LineWidth',1,'FontSize', fontSize, 'LabelHorizontalAlignment','left','HandleVisibility','off') 

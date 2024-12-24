@@ -2,6 +2,9 @@ clear all
 close all
 clc
 
+% TODO: Make sure plotting colors denote the same data across plots (i.e.
+% right-red, left-blue, bino-green
+
 %% Dependencies
 %
 % BlandAltman - https://www.mathworks.com/matlabcentral/fileexchange/45049-bland-altman-and-correlation-plot/
@@ -73,6 +76,7 @@ for k = 1:length(f_ac)
     vr_raw_left = y(c3);
 
     subID = string(VRDATA_ac{k}(1).Username);
+    % TODO: Replace with tresholds from psychometric fits
     vr_threshold_both = mean(vr_raw_both(end-20:end)); % mean of VR logmar score (average last 20 trials)
     vr_threshold_right = mean(vr_raw_right(end-20:end));
     vr_threshold_left = mean(vr_raw_left(end-20:end));
@@ -98,6 +102,7 @@ for k = 1:length(f_cs)
     vr_raw_left = y(c3);
 
     subID = string(VRDATA_cs{k}(1).Username);
+    % TODO: Replace with tresholds from psychometric fits
     vr_threshold_both = mean(vr_raw_both(end-20:end)); % mean of VR loglum score (average last 20 trials)
     vr_threshold_right = mean(vr_raw_right(end-20:end));
     vr_threshold_left = mean(vr_raw_left(end-20:end));
@@ -126,27 +131,29 @@ ac_ses02 = table2array(vr_threshold_ac_02(:,[2 3 4]));
 cs_ses01 = abs(table2array(vr_threshold_cs_01(:,[2 3 4])));
 cs_ses02 = abs(table2array(vr_threshold_cs_02(:,[2 3 4])));
 
-% bland altman plot
+%% Bland-Altman plots
+
+%% Acuity - VR
 leg_ac = {'binocular','right','left'};
-BlandAltman(ac_ses01,ac_ses02,'vr acuity average','bland-altman plot VR (acuity)',leg_ac,'markerSize',7);
+BlandAltman(ac_ses01,ac_ses02,'VR (logMAR)','Acuity - VR',leg_ac,'markerSize',7,'axesLimits',[0 1.5],'baYLimMode',[-.5 .5]);
 fig = gcf;
 % fig.WindowState = "maximized";
 exportgraphics(fig,'../figures/acuity_VR_reliability_average.pdf')
 
-
+%% Contrast - VR
 leg_cs = {'binocular','right','left'};
-BlandAltman(cs_ses01,cs_ses02,'vr contrast average','bland-altman plot VR (contrast)',leg_cs,'markerSize',7);
+BlandAltman(cs_ses01,cs_ses02,'VR (-logContrast)','Contrast - VR',leg_cs,'markerSize',7,'axesLimits',[1 2],'baYLimMode',[-.3 .3]);
 fig2 = gcf;
 % fig2.WindowState = "maximized";
 exportgraphics(fig2,'../figures/contrast_VR_reliability_average.pdf')
 
-%% chart vs vr acuity
+%%  Acuity - VR vs Chart 
 acu_data = readmatrix("chart_vs_vr_acuity.xlsx");
 leg_new = {'right','left','binocular'};
 chart_data_ac = acu_data(:,[5 6 7]);
 vr_data_ac = acu_data(:,[2 3 4]);
 
-[rpc, fig, stats] = BlandAltman(chart_data_ac,vr_data_ac,{'chart','vr','logMar'},'bland-altman plot VR vs chart (acuity)',leg_new,'markerSize',7);
+[rpc, fig, stats] = BlandAltman(chart_data_ac,vr_data_ac,{'Chart','VR','logMar'},'Acuity - VR vs Chart',leg_new,'markerSize',7,'axesLimits',[-.5 1.5],'baYLimMode',[-.5 1]);
 
 % add reference lineshold on
 % subplot(1,2,1);
@@ -154,11 +161,12 @@ yline(fig.Children(4), log10(30/10),'--', 'Quest 2', 'LineWidth',1,'FontSize', f
 % yline(fig.Children(4), log10(30/12.5),'--','Quest 3', 'LineWidth',1,'FontSize', fontSize,'HandleVisibility','off') % Quest 3
 
 exportgraphics(gcf,'../figures/chart_vs_vr_acuity.pdf');
-%% chart vs vr contrast
+
+%% Contrast - VR vs Chart
 cs_data = readmatrix("chart_vs_vr_contrast.xlsx");
 
 chart_data_cs = cs_data(:,[5 6 7]);
-vr_data_cs = cs_data(:,[2 3 4]);
-BlandAltman(chart_data_cs,vr_data_cs,{'chart','vr'},'bland-altman plot VR vs chart (contrast)',leg_new,'markerSize',7);
+vr_data_cs = -cs_data(:,[2 3 4]);
+BlandAltman(chart_data_cs,vr_data_cs,{'Chart','VR','-logContrast'},'Contrast - VR vs Chart',leg_new,'markerSize',7,'axesLimits',[1 2],'baYLimMode',[-1 0]);
 fig6 = gcf;
 exportgraphics(fig6,'../figures/chart_vs_vr_contrast.pdf');
